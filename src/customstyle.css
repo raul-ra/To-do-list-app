@@ -1,0 +1,25 @@
+.navbar-brand {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 auto; 
+    display: block;
+    text-align: center;
+}
+
+.card {
+    border: 1px solid #ccc; /* Solo para visualización */
+    margin-bottom: 10px; /* Ajusta el margen inferior según tus necesidades */
+    padding: 10px; /* Solo para visualización */
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%; /* Para que ocupe toda la altura del card */
+}
+
+.button-group {
+    align-self: flex-end;
+    margin-top: 5px; /* Ajusta el margen superior según tus necesidades */
+}
