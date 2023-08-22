@@ -1,3 +1,9 @@
+const priorityLabels = {
+    'low': 'Baja',
+    'medium': 'Media',
+    'high': 'Alta'
+};
+
 function random(min, max) {
     return Math.random() * (max - min) + min;
 }
@@ -13,11 +19,15 @@ function saveTask(e) {
     let title = document.getElementById('title').value;
     let description = document.getElementById('description').value;
     let dueDate = document.getElementById('dueDate').value;
+    let category = document.getElementById('category').value;
+    let priority = document.getElementById('priority').value;
 
     let task = {
         title,
         description,
         dueDate,
+        category,
+        priority,
         completed: false
     };
 
@@ -88,52 +98,132 @@ function cancelEditTask(index) {
     getTasks();
 }
 
-function getTasks() {
+function applyFilter(filter) {
+    const sortBy = document.getElementById('sortSelect').value;
+    const sortOrder = document.getElementById('orderSelect').value;
+    getTasks(filter, sortBy, sortOrder);
+}
+
+function createFilterSelect() {
+    const filterSelect = document.createElement('select');
+    filterSelect.id = 'filterSelect';
+    filterSelect.className = 'form-control';
+    filterSelect.innerHTML = `
+        <option value="all">Todas</option>
+        <option value="completed">Completadas</option>
+        <option value="pending">Pendientes</option>
+    `;
+    filterSelect.addEventListener('change', function() {
+        const selectedFilter = filterSelect.value;
+        applyFilter(selectedFilter);
+    });
+
+    return filterSelect;
+}
+
+function createSortSelect() {
+    const sortSelect = document.createElement('select');
+    sortSelect.id = 'sortSelect';
+    sortSelect.className = 'form-control';
+    sortSelect.innerHTML = `
+        <option value="dueDate">Fecha de Vencimiento</option>
+        <option value="priority">Prioridad</option>
+    `;
+    sortSelect.addEventListener('change', function() {
+        const selectedSort = sortSelect.value;
+        const selectedOrder = document.getElementById('orderSelect').value;
+        const selectedFilter = document.getElementById('filterSelect').value;
+        getTasks(selectedFilter, selectedSort, selectedOrder);
+    });
+
+    return sortSelect;
+}
+
+function createOrderSelect() {
+    const orderSelect = document.createElement('select');
+    orderSelect.id = 'orderSelect';
+    orderSelect.className = 'form-control';
+    orderSelect.innerHTML = `
+        <option value="asc">Ascendente</option>
+        <option value="desc">Descendente</option>
+    `;
+    orderSelect.addEventListener('change', function() {
+        const selectedOrder = orderSelect.value;
+        const selectedSort = document.getElementById('sortSelect').value;
+        const selectedFilter = document.getElementById('filterSelect').value;
+        getTasks(selectedFilter, selectedSort, selectedOrder);
+    });
+
+    return orderSelect;
+}
+
+function getTasks(filter = 'all', sortBy = 'dueDate', sortOrder = 'asc') {
     let tasks = JSON.parse(localStorage.getItem('tasks'));
+
+    tasks.sort((a, b) => {
+        if (sortBy === 'dueDate') {
+            return sortOrder === 'asc' ? new Date(a.dueDate) - new Date(b.dueDate) : new Date(b.dueDate) - new Date(a.dueDate);
+        } else if (sortBy === 'priority') {
+            const priorityOrder = { 'low': 2, 'medium': 1, 'high': 0 };
+            return sortOrder === 'asc' ? priorityOrder[a.priority] - priorityOrder[b.priority] : priorityOrder[b.priority] - priorityOrder[a.priority];
+        }
+    });
+
     let tasksView = document.getElementById('tasks');
     tasksView.innerHTML = '';
 
-    
-for (let i = 0; i < tasks.length; i++) {
-    let title = tasks[i].title;
-    let description = tasks[i].description;
-    let dueDate = tasks[i].dueDate;
-    let completed = tasks[i].completed;
+    for (let i = 0; i < tasks.length; i++) {
+        let title = tasks[i].title;
+        let description = tasks[i].description;
+        let dueDate = tasks[i].dueDate;
+        let category = tasks[i].category;
+        let priority = tasks[i].priority;
+        let completed = tasks[i].completed;
 
-    // Formatear la fecha en el formato deseado (dd/mm/aa)
-    let formattedDueDate = new Date(dueDate);
-    let day = formattedDueDate.getDate().toString().padStart(2, '0');
-    let month = (formattedDueDate.getMonth() + 1).toString().padStart(2, '0');
-    let year = formattedDueDate.getFullYear().toString().slice(-2);
-    let formattedDate = `${day}/${month}/${year}`;
+        let formattedDueDate = new Date(dueDate);
+        let formattedDate = formattedDueDate.toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-    let taskCard = document.createElement('div');
-    taskCard.className = 'card mb-3';
-    taskCard.id = `task-${i}`;
-    
-    if (completed) {
-        taskCard.classList.add('completed-task');
-    }
-    
-    taskCard.innerHTML = `
-        <div class="card-body">
-            <p>
-                <input type="checkbox" ${completed ? 'checked' : ''} onchange="toggleCompleted(${i})" ${completed ? 'disabled' : ''}>
-                ${title} - ${description} - Fecha: ${formattedDate} <!-- Cambiamos "dueDate" por "formattedDate" -->
-                <button onclick="editTask(${i})" class="btn btn-primary ml-2" ${completed ? 'disabled' : ''}>Editar</button>
-                <button onclick="deleteTask(${i})" class="btn btn-danger ml-2">Eliminar</button>
-            </p>
-        </div>
-    `;
+        let taskCard = document.createElement('div');
+        taskCard.className = 'card mb-3';
+        taskCard.id = `task-${i}`;
 
-    tasksView.appendChild(taskCard);
+        if ((filter === 'completed' && completed) || (filter === 'pending' && !completed) || filter === 'all') {
+            taskCard.innerHTML = `
+                <div class="card-body">
+                    <p>
+                        <input type="checkbox" ${completed ? 'checked' : ''} onchange="toggleCompleted(${i})">
+                        ${title} - ${description} - Categoría: ${category} - Prioridad: ${priorityLabels[priority]} - Fecha: ${formattedDate}
+                        <button onclick="editTask(${i})" class="btn btn-primary ml-2" ${completed ? 'disabled' : ''}>Editar</button>
+                        <button onclick="deleteTask(${i})" class="btn btn-danger ml-2">Eliminar</button>
+                    </p>
+                </div>
+            `;
 
-    if (completed) {
-        taskCard.querySelector('.btn-primary').style.display = 'none';
+            if (completed) {
+                taskCard.querySelector('.btn-primary').style.display = 'none';
+            }
+
+            tasksView.appendChild(taskCard);
         }
     }
 }
 
+function initializeUI() {
+    const filterSelect = createFilterSelect();
+    const sortSelect = createSortSelect();
+    const orderSelect = createOrderSelect();
 
+    const filterDiv = document.getElementById('filterDiv');
+    filterDiv.appendChild(filterSelect);
 
-getTasks();
+    const sortDiv = document.getElementById('sortDiv');
+    sortDiv.appendChild(sortSelect);
+
+    const orderDiv = document.getElementById('orderDiv');
+    orderDiv.appendChild(orderSelect);
+
+    applyFilter('all');
+}
+
+initializeUI();
+
