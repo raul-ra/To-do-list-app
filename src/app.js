@@ -1,3 +1,7 @@
+function random(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
 document.getElementById('formTask').addEventListener('submit', saveTask);
 
 flatpickr("#dueDate", {
@@ -89,37 +93,47 @@ function getTasks() {
     let tasksView = document.getElementById('tasks');
     tasksView.innerHTML = '';
 
-    for (let i = 0; i < tasks.length; i++) {
-        let title = tasks[i].title;
-        let description = tasks[i].description;
-        let dueDate = tasks[i].dueDate;
-        let completed = tasks[i].completed;
+    
+for (let i = 0; i < tasks.length; i++) {
+    let title = tasks[i].title;
+    let description = tasks[i].description;
+    let dueDate = tasks[i].dueDate;
+    let completed = tasks[i].completed;
 
-        let taskCard = document.createElement('div');
-        taskCard.className = 'card mb-3';
-        taskCard.id = `task-${i}`;
-        
-        if (completed) {
-            taskCard.classList.add('completed-task');
-        }
-        
-        taskCard.innerHTML = `
-            <div class="card-body">
-                <p>
-                    <input type="checkbox" ${completed ? 'checked' : ''} onchange="toggleCompleted(${i})" ${completed ? 'disabled' : ''}>
-                    ${title} - ${description} - Fecha: ${dueDate}
-                    <button onclick="editTask(${i})" class="btn btn-primary ml-2" ${completed ? 'disabled' : ''}>Editar</button>
-                    <button onclick="deleteTask(${i})" class="btn btn-danger ml-2">Eliminar</button>
-                </p>
-            </div>
-        `;
+    // Formatear la fecha en el formato deseado (dd/mm/aa)
+    let formattedDueDate = new Date(dueDate);
+    let day = formattedDueDate.getDate().toString().padStart(2, '0');
+    let month = (formattedDueDate.getMonth() + 1).toString().padStart(2, '0');
+    let year = formattedDueDate.getFullYear().toString().slice(-2);
+    let formattedDate = `${day}/${month}/${year}`;
 
-        tasksView.appendChild(taskCard);
+    let taskCard = document.createElement('div');
+    taskCard.className = 'card mb-3';
+    taskCard.id = `task-${i}`;
+    
+    if (completed) {
+        taskCard.classList.add('completed-task');
+    }
+    
+    taskCard.innerHTML = `
+        <div class="card-body">
+            <p>
+                <input type="checkbox" ${completed ? 'checked' : ''} onchange="toggleCompleted(${i})" ${completed ? 'disabled' : ''}>
+                ${title} - ${description} - Fecha: ${formattedDate} <!-- Cambiamos "dueDate" por "formattedDate" -->
+                <button onclick="editTask(${i})" class="btn btn-primary ml-2" ${completed ? 'disabled' : ''}>Editar</button>
+                <button onclick="deleteTask(${i})" class="btn btn-danger ml-2">Eliminar</button>
+            </p>
+        </div>
+    `;
 
-        if (completed) {
-            taskCard.querySelector('.btn-primary').style.display = 'none';
+    tasksView.appendChild(taskCard);
+
+    if (completed) {
+        taskCard.querySelector('.btn-primary').style.display = 'none';
         }
     }
 }
+
+
 
 getTasks();
