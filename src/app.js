@@ -157,7 +157,45 @@ function createOrderSelect() {
     return orderSelect;
 }
 
-function getTasks(filter = 'all', sortBy = 'dueDate', sortOrder = 'asc') {
+function createCategoryFilterSelect() {
+    const categoryFilterSelect = document.createElement('select');
+    categoryFilterSelect.id = 'categoryFilterSelect';
+    categoryFilterSelect.className = 'form-control';
+    
+    const categories = [
+        'Todas',
+        'Trabajo',
+        'Personal',
+        'Estudios',
+        'Salud y Ejercicio',
+        'Finanzas',
+        'Social',
+        'Proyectos',
+        'Viajes',
+        'Compras',
+        'Tecnología',
+        'Otros'
+    ];
+
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.toLowerCase();
+        option.textContent = category;
+        categoryFilterSelect.appendChild(option);
+    });
+    
+    categoryFilterSelect.addEventListener('change', function() {
+        const selectedCategory = categoryFilterSelect.value;
+        const selectedSort = document.getElementById('sortSelect').value;
+        const selectedOrder = document.getElementById('orderSelect').value;
+        const selectedFilter = document.getElementById('filterSelect').value;
+        getTasks(selectedFilter, selectedSort, selectedOrder, selectedCategory);
+    });
+
+    return categoryFilterSelect;
+}
+
+function getTasks(filter = 'all', sortBy = 'dueDate', sortOrder = 'asc', categoryFilter = 'all') {
     let tasks = JSON.parse(localStorage.getItem('tasks'));
 
     tasks.sort((a, b) => {
@@ -187,23 +225,30 @@ function getTasks(filter = 'all', sortBy = 'dueDate', sortOrder = 'asc') {
         taskCard.className = 'card mb-3';
         taskCard.id = `task-${i}`;
 
-        if ((filter === 'completed' && completed) || (filter === 'pending' && !completed) || filter === 'all') {
-            taskCard.innerHTML = `
-                <div class="card-body">
-                    <p>
-                        <input type="checkbox" ${completed ? 'checked' : ''} onchange="toggleCompleted(${i})">
-                        ${title} - ${description} - Categoría: ${category} - Prioridad: ${priorityLabels[priority]} - Fecha: ${formattedDate}
-                        <button onclick="editTask(${i})" class="btn btn-primary ml-2" ${completed ? 'disabled' : ''}>Editar</button>
-                        <button onclick="deleteTask(${i})" class="btn btn-danger ml-2">Eliminar</button>
-                    </p>
-                </div>
-            `;
+        if (
+            (filter === 'completed' && completed) ||
+            (filter === 'pending' && !completed) ||
+            filter === 'all'
+        ) {
+            // Verificamos si el filtro de categoría coincide con la categoría de la tarea, si es "Todas", o si se selecciona una categoría específica
+            if (categoryFilter === 'all' || categoryFilter === 'todas' || categoryFilter === category.toLowerCase()) {
+                taskCard.innerHTML = `
+                    <div class="card-body">
+                        <p>
+                            <input type="checkbox" ${completed ? 'checked' : ''} onchange="toggleCompleted(${i})">
+                            ${title} - ${description} - Categoría: ${category} - Prioridad: ${priorityLabels[priority]} - Fecha: ${formattedDate}
+                            <button onclick="editTask(${i})" class="btn btn-primary ml-2" ${completed ? 'disabled' : ''}>Editar</button>
+                            <button onclick="deleteTask(${i})" class="btn btn-danger ml-2">Eliminar</button>
+                        </p>
+                    </div>
+                `;
 
-            if (completed) {
-                taskCard.querySelector('.btn-primary').style.display = 'none';
+                if (completed) {
+                    taskCard.querySelector('.btn-primary').style.display = 'none';
+                }
+
+                tasksView.appendChild(taskCard);
             }
-
-            tasksView.appendChild(taskCard);
         }
     }
 }
@@ -212,18 +257,24 @@ function initializeUI() {
     const filterSelect = createFilterSelect();
     const sortSelect = createSortSelect();
     const orderSelect = createOrderSelect();
+    
+    const categoryFilterSelect = createCategoryFilterSelect(); // Agregamos esta línea para el filtro de categoría
 
     const filterDiv = document.getElementById('filterDiv');
     filterDiv.appendChild(filterSelect);
-
+    
     const sortDiv = document.getElementById('sortDiv');
     sortDiv.appendChild(sortSelect);
-
+    
     const orderDiv = document.getElementById('orderDiv');
     orderDiv.appendChild(orderSelect);
+    
+    const categoryFilterDiv = document.getElementById('categoryFilterDiv'); // Agregamos esta línea
+    categoryFilterDiv.appendChild(categoryFilterSelect); // Agregamos esta línea
 
     applyFilter('all');
 }
+
 
 initializeUI();
 
