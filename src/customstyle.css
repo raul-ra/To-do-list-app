@@ -37,6 +37,25 @@
     }
 }
 
+/* Alinear los filtros en línea y ocupar el ancho del contenedor */
+#filterDiv, #sortDiv, #orderDiv, #categoryFilterDiv, #priorityFilterDiv {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Ajustar cada filtro para que ocupe un quinto menos el espacio entre filtros */
+#filterDiv > select,
+#sortDiv > select,
+#orderDiv > select,
+#categoryFilterDiv > select,
+#priorityFilterDiv > select {
+    flex: 1;
+    width: calc(20% - 10px); /* Calcula un quinto del ancho menos el espacio entre filtros */
+}
+
+
+
 .card {
     border: 1px solid #ccc; 
     margin-bottom: 10px; 

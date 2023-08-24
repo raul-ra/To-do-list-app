@@ -4,10 +4,6 @@ const priorityLabels = {
     'high': 'Alta'
 };
 
-function random(min, max) {
-    return Math.random() * (max - min) + min;
-}
-
 document.getElementById('formTask').addEventListener('submit', saveTask);
 
 flatpickr("#dueDate", {
@@ -15,94 +11,190 @@ flatpickr("#dueDate", {
     dateFormat: "Y-m-d H:i",
 });
 
-function saveTask(e) {
+async function saveTask(e) {
+    e.preventDefault();
+
     let title = document.getElementById('title').value;
     let description = document.getElementById('description').value;
     let dueDate = document.getElementById('dueDate').value;
     let category = document.getElementById('category').value;
     let priority = document.getElementById('priority').value;
+    let creationDate = new Date().toISOString();
 
     let task = {
         title,
         description,
+        creationDate,
         dueDate,
         category,
         priority,
         completed: false
     };
 
-    if (localStorage.getItem('tasks') === null) {
-        let tasks = [];
-        tasks.push(task);
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-    } else {
-        let tasks = JSON.parse(localStorage.getItem('tasks'));
-        tasks.push(task);
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-    }
+    try {
+        const response = await fetch('http://localhost:3001/tasks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(task),
+        });
 
-    getTasks();
-    document.getElementById('formTask').reset();
-    e.preventDefault();
+        if (response.ok) {
+            getTasks();
+            document.getElementById('formTask').reset();
+        } else {
+            console.error('Error saving task:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error saving task:', error);
+    }
 }
 
-function toggleCompleted(index) {
-    let tasks = JSON.parse(localStorage.getItem('tasks'));
+async function getTasks(filter = 'all', sortBy = 'dueDate', sortOrder = 'asc', categoryFilter = 'all') {
+    let apiUrl = 'http://localhost:3001/tasks';
+
+    try {
+        const response = await fetch(apiUrl);
+        const tasks = await response.json();
+
+        tasks.sort((a, b) => {
+            if (sortBy === 'creationDate') {
+                return sortOrder === 'asc' ? new Date(a.creationDate) - new Date(b.creationDate) : new Date(b.creationDate) - new Date(a.creationDate);
+            } else if (sortBy === 'dueDate') {
+                return sortOrder === 'asc' ? new Date(a.dueDate) - new Date(b.dueDate) : new Date(b.dueDate) - new Date(a.dueDate);
+            } else if (sortBy === 'priority') {
+                const priorityOrder = { 'low': 2, 'medium': 1, 'high': 0 };
+                return sortOrder === 'asc' ? priorityOrder[a.priority] - priorityOrder[b.priority] : priorityOrder[b.priority] - priorityOrder[a.priority];
+            }
+        });
+
+        let tasksView = document.getElementById('tasks');
+        tasksView.innerHTML = '';
+
+        for (let i = 0; i < tasks.length; i++) {
+            let title = tasks[i].title;
+            let description = tasks[i].description;
+            let dueDate = tasks[i].dueDate;
+            let category = tasks[i].category;
+            let priority = tasks[i].priority;
+            let completed = tasks[i].completed;
+            let creationDate = tasks[i].creationDate;
+
+            let formattedDueDate = new Date(dueDate).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            let formattedCreationDate = new Date(creationDate).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+            let taskCard = document.createElement('div');
+            taskCard.className = 'card mb-3';
+            taskCard.id = `task-${i}`;
+
+            if (
+                (filter === 'completed' && completed) ||
+                (filter === 'pending' && !completed) ||
+                filter === 'all'
+            ) {
+                if (categoryFilter === 'all' || (category && categoryFilter === category.toLowerCase())) {
+                    taskCard.innerHTML = `
+                    <div class="card-body">
+                    <p>
+                        <input type="checkbox" ${completed ? 'checked' : ''} onchange="toggleCompleted(${i})">
+                        ${title} - ${description} - Categoría: ${category} - Prioridad: ${priorityLabels[priority]} - Fecha creación: ${formattedCreationDate} - Fecha vencimiento: ${formattedDueDate}
+                        <button onclick="editTask(${i})" class="btn btn-primary ml-2" ${completed ? 'disabled' : ''}>Editar</button>
+                        <button onclick="deleteTask(${i})" class="btn btn-danger ml-2">Eliminar</button>
+                    </p>
+                </div>
+                    `;
+
+                    if (completed) {
+                        taskCard.querySelector('.btn-primary').style.display = 'none';
+                    }
+
+                    tasksView.appendChild(taskCard);
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+    }
+}
+
+async function updateTasksOnServer(tasks) {
+    try {
+        const response = await fetch('http://localhost:3001/tasks', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(tasks),
+        });
+
+        if (!response.ok) {
+            console.error('Error updating tasks:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error updating tasks:', error);
+    }
+}
+
+async function toggleCompleted(index) {
+    let tasks = await getTasksFromServer();
     tasks[index].completed = !tasks[index].completed;
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-    getTasks();
+    await updateTasksOnServer(tasks);
+    await applyFilters();
 }
 
-function deleteTask(index) {
-    let tasks = JSON.parse(localStorage.getItem('tasks'));
+async function deleteTask(index) {
+    let tasks = await getTasksFromServer();
     tasks.splice(index, 1);
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-    getTasks();
+    await updateTasksOnServer(tasks);
+    await applyFilters();
 }
 
-function editTask(index) {
-    let taskContainer = document.getElementById(`task-${index}`);
-    let tasks = JSON.parse(localStorage.getItem('tasks'));
-    let editForm = document.createElement('div');
-    editForm.innerHTML = `
-        <input type="text" id="edited-title-${index}" class="form-control mb-2" value="${tasks[index].title}" ${tasks[index].completed ? 'disabled' : ''}>
-        <textarea id="edited-description-${index}" rows="3" class="form-control" ${tasks[index].completed ? 'disabled' : ''}>${tasks[index].description}</textarea>
-        <button onclick="saveEditedTask(${index})" class="btn btn-primary mt-2" ${tasks[index].completed ? 'disabled' : ''}>Guardar</button>
-        <button onclick="cancelEditTask(${index})" class="btn btn-secondary mt-2" ${tasks[index].completed ? 'disabled' : ''}>Cancelar</button>
-    `;
 
-    taskContainer.innerHTML = '';
-    taskContainer.appendChild(editForm);
+async function updateTasksOnServer(tasks) {
+    try {
+        const response = await fetch('http://localhost:3001/tasks', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(tasks),
+        });
 
-    if (tasks[index].completed) {
-        taskContainer.querySelector(`input[type="checkbox"]`).disabled = true;
-        taskContainer.querySelector('.btn-primary').style.display = 'none';
-        taskContainer.querySelector('.btn-secondary').style.display = 'none';
-        taskContainer.querySelector('.card-body').style.textDecoration = 'line-through';
+        if (!response.ok) {
+            console.error('Error updating tasks:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error updating tasks:', error);
     }
 }
 
-function saveEditedTask(index) {
-    let tasks = JSON.parse(localStorage.getItem('tasks'));
+async function saveEditedTask(index) {
+    let tasks = await getTasksFromServer();
     let editedTitle = document.getElementById(`edited-title-${index}`).value;
     let editedDescription = document.getElementById(`edited-description-${index}`).value;
 
     tasks[index].title = editedTitle;
     tasks[index].description = editedDescription;
 
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-    getTasks();
+    await updateTasksOnServer(tasks);
+    await applyFilters();
 }
 
-function cancelEditTask(index) {
-    getTasks();
+
+async function cancelEditTask(index) {
+    await applyFilters();
 }
 
-function applyFilter(filter) {
-    const sortBy = document.getElementById('sortSelect').value;
-    const sortOrder = document.getElementById('orderSelect').value;
-    getTasks(filter, sortBy, sortOrder);
+async function applyFilters() {
+    const selectedFilter = document.getElementById('filterSelect').value;
+    const selectedSort = document.getElementById('sortSelect').value;
+    const selectedOrder = document.getElementById('orderSelect').value;
+    const selectedCategory = document.getElementById('categoryFilterSelect').value;
+
+    await getTasks(selectedFilter, selectedSort, selectedOrder, selectedCategory);
 }
+
 
 function createFilterSelect() {
     const filterSelect = document.createElement('select');
@@ -161,9 +253,9 @@ function createCategoryFilterSelect() {
     const categoryFilterSelect = document.createElement('select');
     categoryFilterSelect.id = 'categoryFilterSelect';
     categoryFilterSelect.className = 'form-control';
-    
+
     const categories = [
-        'Todas',
+        'Todas',  // Mantén esta opción "Todas" en la lista
         'Trabajo',
         'Personal',
         'Estudios',
@@ -183,98 +275,42 @@ function createCategoryFilterSelect() {
         option.textContent = category;
         categoryFilterSelect.appendChild(option);
     });
-    
+
     categoryFilterSelect.addEventListener('change', function() {
-        const selectedCategory = categoryFilterSelect.value;
+        const selectedFilter = document.getElementById('filterSelect').value;
         const selectedSort = document.getElementById('sortSelect').value;
         const selectedOrder = document.getElementById('orderSelect').value;
-        const selectedFilter = document.getElementById('filterSelect').value;
-        getTasks(selectedFilter, selectedSort, selectedOrder, selectedCategory);
+        const selectedCategory = categoryFilterSelect.value;
+        applyFilter(selectedFilter, selectedSort, selectedOrder, selectedCategory);
     });
 
     return categoryFilterSelect;
 }
 
-function getTasks(filter = 'all', sortBy = 'dueDate', sortOrder = 'asc', categoryFilter = 'all') {
-    let tasks = JSON.parse(localStorage.getItem('tasks'));
+async function initializeUI() {
+    try {
+        await getTasks();
+        const filterSelect = createFilterSelect();
+        const sortSelect = createSortSelect();
+        const orderSelect = createOrderSelect();
+        const categoryFilterSelect = createCategoryFilterSelect();
 
-    tasks.sort((a, b) => {
-        if (sortBy === 'dueDate') {
-            return sortOrder === 'asc' ? new Date(a.dueDate) - new Date(b.dueDate) : new Date(b.dueDate) - new Date(a.dueDate);
-        } else if (sortBy === 'priority') {
-            const priorityOrder = { 'low': 2, 'medium': 1, 'high': 0 };
-            return sortOrder === 'asc' ? priorityOrder[a.priority] - priorityOrder[b.priority] : priorityOrder[b.priority] - priorityOrder[a.priority];
-        }
-    });
+        const filterDiv = document.getElementById('filterDiv');
+        filterDiv.appendChild(filterSelect);
 
-    let tasksView = document.getElementById('tasks');
-    tasksView.innerHTML = '';
+        const sortDiv = document.getElementById('sortDiv');
+        sortDiv.appendChild(sortSelect);
 
-    for (let i = 0; i < tasks.length; i++) {
-        let title = tasks[i].title;
-        let description = tasks[i].description;
-        let dueDate = tasks[i].dueDate;
-        let category = tasks[i].category;
-        let priority = tasks[i].priority;
-        let completed = tasks[i].completed;
+        const orderDiv = document.getElementById('orderDiv');
+        orderDiv.appendChild(orderSelect);
 
-        let formattedDueDate = new Date(dueDate);
-        let formattedDate = formattedDueDate.toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const categoryFilterDiv = document.getElementById('categoryFilterDiv');
+        categoryFilterDiv.appendChild(categoryFilterSelect);
 
-        let taskCard = document.createElement('div');
-        taskCard.className = 'card mb-3';
-        taskCard.id = `task-${i}`;
-
-        if (
-            (filter === 'completed' && completed) ||
-            (filter === 'pending' && !completed) ||
-            filter === 'all'
-        ) {
-            // Verificamos si el filtro de categoría coincide con la categoría de la tarea, si es "Todas", o si se selecciona una categoría específica
-            if (categoryFilter === 'all' || categoryFilter === 'todas' || categoryFilter === category.toLowerCase()) {
-                taskCard.innerHTML = `
-                    <div class="card-body">
-                        <p>
-                            <input type="checkbox" ${completed ? 'checked' : ''} onchange="toggleCompleted(${i})">
-                            ${title} - ${description} - Categoría: ${category} - Prioridad: ${priorityLabels[priority]} - Fecha: ${formattedDate}
-                            <button onclick="editTask(${i})" class="btn btn-primary ml-2" ${completed ? 'disabled' : ''}>Editar</button>
-                            <button onclick="deleteTask(${i})" class="btn btn-danger ml-2">Eliminar</button>
-                        </p>
-                    </div>
-                `;
-
-                if (completed) {
-                    taskCard.querySelector('.btn-primary').style.display = 'none';
-                }
-
-                tasksView.appendChild(taskCard);
-            }
-        }
+        applyFilters(); // Llamada corregida
+    } catch (error) {
+        console.error('Error initializing UI:', error);
     }
 }
 
-function initializeUI() {
-    const filterSelect = createFilterSelect();
-    const sortSelect = createSortSelect();
-    const orderSelect = createOrderSelect();
-    
-    const categoryFilterSelect = createCategoryFilterSelect(); // Agregamos esta línea para el filtro de categoría
-
-    const filterDiv = document.getElementById('filterDiv');
-    filterDiv.appendChild(filterSelect);
-    
-    const sortDiv = document.getElementById('sortDiv');
-    sortDiv.appendChild(sortSelect);
-    
-    const orderDiv = document.getElementById('orderDiv');
-    orderDiv.appendChild(orderSelect);
-    
-    const categoryFilterDiv = document.getElementById('categoryFilterDiv'); // Agregamos esta línea
-    categoryFilterDiv.appendChild(categoryFilterSelect); // Agregamos esta línea
-
-    applyFilter('all');
-}
-
-
 initializeUI();
-
