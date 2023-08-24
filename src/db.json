@@ -1,15 +1,155 @@
 {
     "tasks": [
         {
-        "id": 1,
-        "title": "Tarea 1",
-        "completed": false
+        "title": "Hacer la compra",
+        "description": "Comprar alimentos y productos necesarios",
+        "creationDate": "2023-08-24T19:51:54.661Z",
+        "dueDate": "2023-08-25 12:00",
+        "category": "Compras",
+        "priority": "medium",
+        "completed": false,
+        "id": 1
         },
         {
-        "id": 2,
-        "title": "Tarea 2",
-        "completed": true
-        }
+        "title": "Estudiar para el examen",
+        "description": "Repasar los temas para el examen de historia",
+        "creationDate": "2023-08-24T20:19:15.484Z",
+        "dueDate": "2023-08-27 18:00",
+        "category": "Estudios",
+        "priority": "high",
+        "completed": false,
+        "id": 2
+        },
+        {
+        "title": "Ir al gimnasio",
+        "description": "Realizar una sesión de entrenamiento",
+        "creationDate": "2023-08-24T20:27:56.648Z",
+        "dueDate": "2023-08-24 16:00",
+        "category": "Salud y Ejercicio",
+        "priority": "low",
+        "completed": true,
+        "id": 3
+        },
+        {
+        "title": "Preparar presentación",
+        "description": "Crear diapositivas para la presentación de proyecto",
+        "creationDate": "2023-08-24T20:34:00.537Z",
+        "dueDate": "2023-08-30 10:00",
+        "category": "Proyectos",
+        "priority": "high",
+        "completed": false,
+        "id": 4
+      },
+      {
+        "title": "Planificar viaje",
+        "description": "Investigar destinos y reservar vuelos y alojamiento",
+        "creationDate": "2023-08-24T20:34:55.099Z",
+        "dueDate": "2023-09-10 23:59",
+        "category": "Viajes",
+        "priority": "medium",
+        "completed": false,
+        "id": 5
+      },
+      {
+        "title": "Completar informe",
+        "description": "Finalizar el informe mensual de ventas",
+        "creationDate": "2023-08-24T19:51:54.661Z",
+        "dueDate": "2023-08-30 15:00",
+        "category": "Trabajo",
+        "priority": "high",
+        "completed": false,
+        "id": 6
+      },
+      {
+        "title": "Ir al médico",
+        "description": "Consulta médica de rutina",
+        "creationDate": "2023-08-25T09:00:00.000Z",
+        "dueDate": "2023-08-25 11:30",
+        "category": "Salud y Ejercicio",
+        "priority": "medium",
+        "completed": false,
+        "id": 7
+      },
+      {
+        "title": "Comprar regalo de cumpleaños",
+        "description": "Buscar un regalo para el cumpleaños de María",
+        "creationDate": "2023-08-25T11:30:00.000Z",
+        "dueDate": "2023-08-28 17:00",
+        "category": "Compras",
+        "priority": "low",
+        "completed": false,
+        "id": 8
+      },
+      {
+        "title": "Leer nuevo libro",
+        "description": "Iniciar la lectura del libro recomendado",
+        "creationDate": "2023-08-26T14:00:00.000Z",
+        "dueDate": "2023-09-05 20:00",
+        "category": "Personal",
+        "priority": "medium",
+        "completed": false,
+        "id": 9
+      },
+      {
+        "title": "Preparar comida",
+        "description": "Cocinar una cena especial en casa",
+        "creationDate": "2023-08-27T18:00:00.000Z",
+        "dueDate": "2023-08-27 19:30",
+        "category": "Personal",
+        "priority": "low",
+        "completed": false,
+        "id": 10
+      },
+      {
+        "title": "Resolver ejercicios de matemáticas",
+        "description": "Practicar problemas de álgebra y cálculo",
+        "creationDate": "2023-08-28T10:00:00.000Z",
+        "dueDate": "2023-08-29 14:00",
+        "category": "Estudios",
+        "priority": "high",
+        "completed": false,
+        "id": 11
+      },
+      {
+        "title": "Pagar facturas",
+        "description": "Realizar el pago de las facturas mensuales",
+        "creationDate": "2023-08-29T12:00:00.000Z",
+        "dueDate": "2023-09-05 23:59",
+        "category": "Finanzas",
+        "priority": "medium",
+        "completed": false,
+        "id": 12
+      },
+      {
+        "title": "Organizar reunión",
+        "description": "Programar una reunión con el equipo de proyecto",
+        "creationDate": "2023-08-30T09:00:00.000Z",
+        "dueDate": "2023-08-31 11:00",
+        "category": "Trabajo",
+        "priority": "high",
+        "completed": false,
+        "id": 13
+      },
+      {
+        "title": "Ejercicio de cardio",
+        "description": "Realizar una sesión intensa de cardio en el gimnasio",
+        "creationDate": "2023-08-31T17:00:00.000Z",
+        "dueDate": "2023-08-31 18:30",
+        "category": "Salud y Ejercicio",
+        "priority": "medium",
+        "completed": false,
+        "id": 14
+      },
+      {
+        "title": "Investigar nuevas tecnologías",
+        "description": "Explorar las últimas tendencias en tecnología",
+        "creationDate": "2023-09-01T13:00:00.000Z",
+        "dueDate": "2023-09-03 17:00",
+        "category": "Tecnología",
+        "priority": "low",
+        "completed": false,
+        "id": 15
+      }
     ]
-}
+  }
   
