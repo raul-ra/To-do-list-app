@@ -38,6 +38,11 @@ Una To-Do List es una aplicación simple pero útil que permite a los usuarios o
 - [CSShake](https://csshake.surge.sh/): Biblioteca para añadir efectos de agitación a los elementos.
 - [Flatpickr](https://flatpickr.js.org/): Selector de fechas y horarios.
 
+## Proyecto en JIRA
+
+Puedes acceder al proyecto en JIRA para esta aplicación [aquí](https://palestra-app.atlassian.net/jira/software/projects/TO/boards/4/timeline?shared=&atlOrigin=eyJpIjoiODU1OTUwM2JlMWUxNDY3NDg0NDM2NmVlNjg3ODFiNTMiLCJwIjoiaiJ9).
+
+
 ## Diseño en Figma
 
 Puedes consultar el diseño visual de la aplicación en [Figma](https://www.figma.com/file/zxa0SsaEK1pjnIirXa7Klk/To-do-list?type=design&node-id=12%3A2175&mode=design&t=Fs4k80Zi88zObewj-1).
@@ -113,6 +118,10 @@ A Task List is a simple yet useful application that allows users to organize and
 ## Figma Design
 
 You can check the visual design of the application on [Figma](https://www.figma.com/file/zxa0SsaEK1pjnIirXa7Klk/To-do-list?type=design&node-id=12%3A2175&mode=design&t=Fs4k80Zi88zObewj-1).
+
+## JIRA Project
+
+You can access the JIRA project for this application [here](https://palestra-app.atlassian.net/jira/software/projects/TO/boards/4/timeline?shared=&atlOrigin=eyJpIjoiODU1OTUwM2JlMWUxNDY3NDg0NDM2NmVlNjg3ODFiNTMiLCJwIjoiaiJ9).
 
 ## Installation
 
