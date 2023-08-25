@@ -1,143 +1,103 @@
-# Lista de Tareas
+# Aplicación Lista de Tareas
 
-Una aplicación de Lista de Tareas que permite a los usuarios organizar y administrar sus tareas diarias.
+Esta es una aplicación simple de Lista de Tareas construida usando HTML, CSS y JavaScript. La aplicación permite a los usuarios agregar, editar y eliminar tareas. También proporciona opciones de filtrado y ordenamiento para las tareas.
 
-## Descripción
+## Características
 
-Una To-Do List es una aplicación simple pero útil que permite a los usuarios organizar y administrar sus tareas diarias. En esta ocasión, nos centraremos únicamente en la parte frontal, que debe presentar una interfaz dinámica donde consultar, insertar, modificar y eliminar registros.
-
-## Requisitos
-
-### Requisitos funcionales
-
-- Crear tarea: Los usuarios PODRÁN agregar nuevas tareas a la lista, proporcionando un título y una descripción.
-- Leer tareas: Los usuarios PODRÁN ver todas las tareas existentes en una lista.
-- Marcar tarea como completada: Los usuarios PODRÁN marcar una tarea como completada.
-- Editar tarea: Los usuarios PODRÁN editar el título y la descripción de una tarea existente.
-- Eliminar tarea: Los usuarios PODRÁN eliminar una tarea de la lista.
-- Ordenar tareas: Los usuarios PODRÁN ordenar las tareas por fecha de creación, fecha de vencimiento, estado, etc.
-
-### Extras funcionales
-
-- Filtrar tareas: Los usuarios PODRÁN filtrar las tareas por estado (completadas / pendientes).
-- Comentarios en las tareas: Los usuarios PODRÁN agregar comentarios a una tarea específica.
-- Categorización de tareas: Permitir a los usuarios asignar categorías o etiquetas a sus tareas para una mejor organización.
-- Prioridades de tareas: Agregar la capacidad de asignar prioridades a las tareas (alta, media, baja) y ordenarlas en consecuencia.
-- Registro de usuarios: Los usuarios PODRÁN registrarse en la aplicación proporcionando un nombre de usuario y una contraseña.
+- Agregar una nueva tarea con título, descripción, fecha de vencimiento, categoría y prioridad.
+- Editar tareas existentes.
+- Eliminar tareas.
+- Filtrar tareas por estado de completado, categoría y prioridad.
+- Ordenar tareas por fecha de vencimiento o prioridad.
 
 ## Tecnologías Utilizadas
 
 - HTML
 - CSS
+- Bootstrap (tema Bootswatch Sketchy)
+- Animaciones CSS Shake
 - JavaScript
+- Flatpickr para la entrada de fecha y hora
 
-## Librerías Utilizadas
+## Cómo Usar
 
-- [Bootswatch Sketchy](https://bootswatch.com/sketchy/): Estilo visual para la interfaz de usuario.
-- [CSShake](https://csshake.surge.sh/): Biblioteca para añadir efectos de agitación a los elementos.
-- [Flatpickr](https://flatpickr.js.org/): Selector de fechas y horarios.
+1. Clona el repositorio en tu máquina local.
+2. Abre el archivo `index.html` en tu navegador web.
+3. Usa el formulario para agregar nuevas tareas.
+4. Edita o elimina tareas usando los botones proporcionados.
+5. Utiliza las opciones de filtrado y ordenamiento para administrar tus tareas de manera efectiva.
+
+## Testeo con Postman
+
+Se ha utilizado Postman para probar y validar la API REST implementada en el servidor. Las rutas para registrar usuarios, iniciar sesión y administrar tareas han sido probadas utilizando Postman para asegurar su funcionamiento correcto, 
+aunque existe un ERROR 405 al testear POST.
+
+## Proyecto en JIRA
+
+Puedes acceder al proyecto en JIRA para esta aplicación [aquí](https://palestra-app.atlassian.net/jira/software/projects/TO/boards/4/timeline?shared=&atlOrigin=eyJpIjoiODU1OTUwM2JlMWUxNDY3NDg0NDM2NmVlNjg3ODFiNTMiLCJwIjoiaiJ9).
+
+## Vista Previa
+
+![Vista Previa](preview.png)
+
+## Reconocimientos
+
+- Bootswatch: [https://bootswatch.com/sketchy/](https://bootswatch.com/sketchy/)
+- CSS Shake: [https://csshake.surge.sh/](https://csshake.surge.sh/)
+- Flatpickr: [https://flatpickr.js.org/](https://flatpickr.js.org/)
 
 ## Diseño en Figma
 
-Puedes consultar el diseño visual de la aplicación en [Figma](https://www.figma.com/file/zxa0SsaEK1pjnIirXa7Klk/To-do-list?type=design&node-id=12%3A2175&mode=design&t=Fs4k80Zi88zObewj-1).
-
-## Instalación
-
-1. Clona este repositorio.
-2. Abre el archivo `index.html` en tu navegador web.
-
-## Uso
-
-1. Abre la aplicación en tu navegador.
-2. Agrega nuevas tareas proporcionando un título, descripción, fecha de vencimiento, categoría y prioridad.
-3. Marca las tareas como completadas.
-4. Edita las tareas existentes para actualizar sus detalles.
-5. Elimina las tareas que ya no necesitas.
-6. Ordena y filtra las tareas según tus necesidades.
-
-## Contribución
-
-Si deseas contribuir a este proyecto, sigue estos pasos:
-
-1. Realiza un fork de este repositorio.
-2. Crea una rama para tu función o corrección: `git checkout -b feature/nueva-funcion`.
-3. Realiza los cambios necesarios y commitea tus cambios: `git commit -m 'Agregada nueva función'`.
-4. Envía tus cambios al repositorio remoto: `git push origin feature/nueva-funcion`.
-5. Crea una Pull Request en GitHub.
-
-## Licencia
-
-Este proyecto está bajo la Licencia MIT.
+Puedes ver el diseño en Figma de esta aplicación [aquí](https://www.figma.com/file/zxa0SsaEK1pjnIirXa7Klk/To-do-list?type=design&node-id=12%3A2175&mode=design&t=Fs4k80Zi88zObewj-1).
 
 
-# Task List
+# To-Do List App
 
-A Task List application that allows users to organize and manage their daily tasks.
+This is a simple To-Do List application built using HTML, CSS, and JavaScript. The app allows users to add, edit, and delete tasks. It also provides filtering and sorting options for tasks.
 
-## Description
+## Features
 
-A Task List is a simple yet useful application that allows users to organize and manage their daily tasks. On this occasion, we will focus solely on the front-end part, which should present a dynamic interface for querying, inserting, modifying, and deleting records.
-
-## Requirements
-
-### Functional Requirements
-
-- Create task: Users will be able to add new tasks to the list, providing a title and a description.
-- Read tasks: Users will be able to view all existing tasks in a list.
-- Mark task as completed: Users will be able to mark a task as completed.
-- Edit task: Users will be able to edit the title and description of an existing task.
-- Delete task: Users will be able to delete a task from the list.
-- Sort tasks: Users will be able to sort tasks by creation date, due date, status, etc.
-
-### Additional Functionalities
-
-- Filter tasks: Users will be able to filter tasks by status (completed / pending).
-- Comments on tasks: Users will be able to add comments to a specific task.
-- Task categorization: Allow users to assign categories or tags to their tasks for better organization.
-- Task priorities: Add the ability to assign priorities to tasks (high, medium, low) and sort them accordingly.
-- User registration: Users will be able to register in the application by providing a username and password.
+- Add a new task with title, description, due date, category, and priority.
+- Edit existing tasks.
+- Delete tasks.
+- Filter tasks by completion status, category, and priority.
+- Sort tasks by due date or priority.
 
 ## Technologies Used
 
 - HTML
 - CSS
+- Bootstrap (Bootswatch Sketchy theme)
+- CSS Shake animations
 - JavaScript
+- Flatpickr for date and time input
 
-## Libraries Used
+## How to Use
 
-- [Bootswatch Sketchy](https://bootswatch.com/sketchy/): Visual style for the user interface.
-- [CSShake](https://csshake.surge.sh/): Library for adding shake effects to elements.
-- [Flatpickr](https://flatpickr.js.org/): Date and time picker.
+1. Clone the repository to your local machine.
+2. Open the `index.html` file in your web browser.
+3. Use the form to add new tasks.
+4. Edit or delete tasks using the provided buttons.
+5. Utilize filtering and sorting options to manage your tasks effectively.
+
+## Testing with Postman
+
+Postman has been used to test and validate the implemented REST API on the server. Routes for user registration, login, and task management have been tested using Postman to ensure their correct functionality, although there is a 405 ERROR when testing POST requests.
+
+## JIRA Project
+
+You can access the JIRA project for this application [here](https://palestra-app.atlassian.net/jira/software/projects/TO/boards/4/timeline?shared=&atlOrigin=eyJpIjoiODU1OTUwM2JlMWUxNDY3NDg0NDM2NmVlNjg3ODFiNTMiLCJwIjoiaiJ9).
+
+## Preview
+
+![Preview](preview.png)
+
+## Acknowledgments
+
+- Bootswatch: [https://bootswatch.com/sketchy/](https://bootswatch.com/sketchy/)
+- CSS Shake: [https://csshake.surge.sh/](https://csshake.surge.sh/)
+- Flatpickr: [https://flatpickr.js.org/](https://flatpickr.js.org/)
 
 ## Figma Design
 
-You can check the visual design of the application on [Figma](https://www.figma.com/file/zxa0SsaEK1pjnIirXa7Klk/To-do-list?type=design&node-id=12%3A2175&mode=design&t=Fs4k80Zi88zObewj-1).
-
-## Installation
-
-1. Clone this repository.
-2. Open the `index.html` file in your web browser.
-
-## Usage
-
-1. Open the application in your browser.
-2. Add new tasks by providing a title, description, due date, category, and priority.
-3. Mark tasks as completed.
-4. Edit existing tasks to update their details.
-5. Delete tasks that are no longer needed.
-6. Sort and filter tasks according to your needs.
-
-## Contribution
-
-If you wish to contribute to this project, follow these steps:
-
-1. Fork this repository.
-2. Create a branch for your feature or fix: `git checkout -b feature/new-feature`.
-3. Make necessary changes and commit your changes: `git commit -m 'Added new feature'`.
-4. Push your changes to the remote repository: `git push origin feature/new-feature`.
-5. Create a Pull Request on GitHub.
-
-## License
-
-This project is under the MIT License. 
-
+You can view the Figma design for this application [here](https://www.figma.com/file/zxa0SsaEK1pjnIirXa7Klk/To-do-list?type=design&node-id=12%3A2175&mode=design&t=Fs4k80Zi88zObewj-1).
